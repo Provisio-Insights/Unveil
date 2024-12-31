@@ -22,13 +22,6 @@ jobs:
         export PATH="$PATH:`pwd`/flutter/bin"
         flutter doctor
 
-    - name: Debug Flutter PATH
-      run: |
-        export PATH="$PATH:`pwd`/flutter/bin"
-        echo "Current PATH: $PATH"
-        ls `pwd`/flutter/bin
-        flutter --version
-
     - name: Install Flutter dependencies
       run: |
         export PATH="$PATH:`pwd`/flutter/bin"
@@ -38,12 +31,9 @@ jobs:
       run: |
         export PATH="$PATH:`pwd`/flutter/bin"
         flutter build web
-
-    - name: Add .nojekyll to root
-      run: echo "" > build/web/.nojekyll
-
-    - name: Copy index.html to 404.html
-      run: cp build/web/index.html build/web/404.html
+        sed -i 's|<base href="/">|<base href="/<repository-name>/">|' build/web/index.html
+        cp build/web/index.html build/web/404.html
+        echo "" > build/web/.nojekyll
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3

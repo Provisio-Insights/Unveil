@@ -3,7 +3,7 @@ name: Build and Deploy Windows App
 on:
   push:
     branches:
-      - main # Trigger the workflow on pushes to the main branch
+      - main
 
 jobs:
   build:
@@ -11,42 +11,36 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Step 1: Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Install Flutter
     - name: Install Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable
         $env:PATH = "$env:PATH;$pwd/flutter/bin"
         flutter doctor
 
-    # Step 3: Install dependencies
     - name: Install dependencies
       run: |
         $env:PATH = "$env:PATH;$pwd/flutter/bin"
         flutter pub get
 
-    # Step 4: Build the Windows release
     - name: Build Windows release
       run: |
         $env:PATH = "$env:PATH;$pwd/flutter/bin"
         flutter build windows
 
-    # Step 5: Archive the build artifacts
-    - name: Create ZIP of build artifacts
+    - name: Archive the build artifacts
       run: |
-        cd build/windows/runner/Release
-        Compress-Archive -Path * -DestinationPath ../../../../windows_build.zip
+        mkdir build_artifacts
+        Copy-Item -Path build/windows/x64/runner/Release/* -Destination build_artifacts/ -Recurse
+        Compress-Archive -Path build_artifacts/* -DestinationPath build/windows_build.zip
 
-    # Step 6: Create or update a release
     - name: Create or Update Release
-      id: create_release
       uses: softprops/action-gh-release@v1
       with:
         files: build/windows_build.zip
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: latest # Use a static tag for continuous updates
+        tag_name: latest
         name: "Latest Windows Build"
-        prerelease: true # Optional: Mark the release as a pre-release
+        prerelease: true
