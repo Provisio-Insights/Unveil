@@ -1,4 +1,4 @@
-name: Build and Deploy Web App
+name: Build and Deploy Flutter Web App
 
 on:
   push:
@@ -13,18 +13,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 'stable'
-
-    - name: Debug Flutter Setup
-      run: flutter doctor
-
     - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y git unzip xz-utils zip libglu1-mesa
+
+    - name: Set up Flutter
+      run: |
+        git clone https://github.com/flutter/flutter.git -b stable
+        export PATH="$PATH:`pwd`/flutter/bin"
+        flutter doctor
+
+    - name: Install Flutter dependencies
       run: flutter pub get
 
-    - name: Build for web
+    - name: Build Flutter Web App
       run: flutter build web
 
     - name: Deploy to GitHub Pages
