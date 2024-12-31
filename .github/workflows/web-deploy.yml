@@ -19,14 +19,25 @@ jobs:
     - name: Install Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable
-        echo "export PATH=$PATH:`pwd`/flutter/bin" >> $GITHUB_ENV
+        export PATH="$PATH:`pwd`/flutter/bin"
         flutter doctor
 
+    - name: Debug Flutter PATH
+      run: |
+        export PATH="$PATH:`pwd`/flutter/bin"
+        echo "Current PATH: $PATH"
+        ls `pwd`/flutter/bin
+        flutter --version
+
     - name: Install Flutter dependencies
-      run: flutter pub get
+      run: |
+        export PATH="$PATH:`pwd`/flutter/bin"
+        flutter pub get
 
     - name: Build Flutter Web App
-      run: flutter build web
+      run: |
+        export PATH="$PATH:`pwd`/flutter/bin"
+        flutter build web
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
