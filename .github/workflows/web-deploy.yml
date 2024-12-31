@@ -39,6 +39,12 @@ jobs:
         export PATH="$PATH:`pwd`/flutter/bin"
         flutter build web
 
+    - name: Add .nojekyll to root
+      run: echo "" > build/web/.nojekyll
+
+    - name: Copy index.html to 404.html
+      run: cp build/web/index.html build/web/404.html
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
