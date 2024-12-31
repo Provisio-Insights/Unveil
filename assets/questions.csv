@@ -297,7 +297,7 @@ Wild,5,"Who here has visited a swinger’s club? Confess or skip.",false,false,0
 Wild,5,"Ask each couple to show a 5-second ‘intense gaze’ while the group watches.",false,true,5
 Wild,5,"Any pair willing can do a 10s ‘doggy style’ simulation in front of the group (clothed).",false,true,10
 Wild,5,"Everyone reveals the wildest place they’ve had sex, one-liner each, or skip.",false,false,0
-Wild,5,"All single players choose one person they’d bed right now if the other agreed.",false,false,0
+Wild,5,"All players choose one person they’d bed right now if the other agreed.",false,false,0
 Wild,5,"Pick someone to share the dirtiest text they have in their phone, or skip if too shy.",false,false,0
 DrinkIf,0,"Drink if you’ve ever kissed more than one person in a single day.",false,false,0
 DrinkIf,0,"Drink if you’ve ever gone skinny-dipping voluntarily.",false,false,0
