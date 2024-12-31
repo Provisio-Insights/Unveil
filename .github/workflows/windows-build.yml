@@ -19,22 +19,26 @@ jobs:
     - name: Install Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable
-        set PATH=%PATH%;%CD%/flutter/bin
+        $env:PATH = "$env:PATH;$pwd/flutter/bin"
         flutter doctor
 
     # Step 3: Install dependencies
     - name: Install dependencies
-      run: flutter pub get
+      run: |
+        $env:PATH = "$env:PATH;$pwd/flutter/bin"
+        flutter pub get
 
     # Step 4: Build the Windows release
     - name: Build Windows release
-      run: flutter build windows
+      run: |
+        $env:PATH = "$env:PATH;$pwd/flutter/bin"
+        flutter build windows
 
     # Step 5: Archive the build artifacts
     - name: Create ZIP of build artifacts
       run: |
         cd build/windows/runner/Release
-        powershell Compress-Archive -Path * -DestinationPath ../../../../windows_build.zip
+        Compress-Archive -Path * -DestinationPath ../../../../windows_build.zip
 
     # Step 6: Create or update a release
     - name: Create or Update Release
