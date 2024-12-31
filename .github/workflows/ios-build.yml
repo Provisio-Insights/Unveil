@@ -16,7 +16,7 @@ jobs:
     - name: Install Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable
-        export PATH="$PATH:`pwd`/flutter/bin"
+        echo "export PATH=$PATH:`pwd`/flutter/bin" >> $GITHUB_ENV
         flutter doctor
 
     - name: Install Flutter dependencies
@@ -29,5 +29,3 @@ jobs:
       run: |
         cd build/ios/iphoneos
         zip -r app.ipa Runner.app
-      env:
-        FLUTTER_ROOT: ${{ env.HOME }}/flutter
