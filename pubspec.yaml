@@ -1,0 +1,18 @@
+name: Unveil
+description: A truth or dare game for adventurous adults.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  confetti: ^0.7.0
+  csv: ^5.0.0
+  flutter:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/questions.csv

@@ -1,0 +1,1656 @@
+// risque_questions.dart
+
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+// If you haven't declared levelIsActive in this file, either import it from main
+// or remove the checks in the getActiveX methods below. We'll assume you have it globally.
+
+/// Basic stubs to fix potential errors:
+bool arePlayersCompatible(Map<String, dynamic> p1, Map<String, dynamic> p2) {
+  // Insert real orientation logic if needed.
+  return true; // Everyone is compatible
+}
+
+int findCompatiblePartner(int currentIndex, List<Map<String, dynamic>> allPlayers) {
+  // Insert logic to shuffle and compare orientation, etc.
+  // For now, return random or -1 if you like
+  if (allPlayers.length < 2) return -1; // no partner possible
+  List<int> candidates = List.generate(allPlayers.length, (i) => i)
+    ..remove(currentIndex);
+  candidates.shuffle();
+  return candidates.isNotEmpty ? candidates.first : -1;
+}
+
+// --------------------------------------------------------------------------
+// TRUTH PROMPTS
+// Each level has 20 items, from mild to extremely spicy. Adjust as needed.
+// --------------------------------------------------------------------------
+Map<int, List<Map<String, dynamic>>> truths = {
+  1: [
+    {
+      "text": "What’s your go-to guilty pleasure snack?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever kissed someone in secret? How did it happen?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Who was your first crush? Spill the details.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most childish thing you still do?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the last lie you told, even a small one?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the weirdest thing you’ve ever eaten and liked?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever had a crush on a teacher or boss?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s one thing you’re embarrassed to admit you enjoy?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your worst habit that you secretly love?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you had to choose: a week without your phone or a week without snacks?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s something you did as a kid you still miss doing?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What is your strangest hidden talent?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever pretended to be sick to skip work or school?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest pet peeve?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you could only eat one food for the rest of your life, what would it be?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the silliest thing you believed as a child?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever snuck out of the house?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Which celebrity do you think is totally overrated?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Who would you haunt if you were a ghost?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your favorite cheesy pick-up line?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  2: [
+    {
+      "text": "What’s the strangest dream you’ve ever had?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Describe your most awkward date experience.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your wildest fantasy you’d share with a partner?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever flirted with someone you shouldn’t have?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What body part are you most proud of?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your favorite part of foreplay? Be honest!",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever been caught watching something naughty?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest relationship deal-breaker?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most unusual place you’ve ever made out?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever had a wardrobe malfunction in public?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What kind of role-play scenario would you try if you could?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever skinny-dipped or wanted to?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do you prefer giving or receiving (massages, kisses, etc.)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever faked interest just to get someone off your back?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you had 24 hours to do anything you wanted, what would it be?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the hottest thing someone has ever said to you?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever sent a risqué text to the wrong person?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Would you ever date someone much older or younger?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the longest you’ve gone without intimate contact?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever gone commando in public for fun?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  3: [
+    {
+      "text": "Have you ever sexted someone? Describe how it started.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Who here would you most like to skinny-dip with?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most daring thing you’ve done while under the influence?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest bedroom pet peeve?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever done a ‘friends with benefits’ situation? Did it work?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ever fantasized about someone in this room? Spill (or skip)!",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the kinkiest thing you’ve tried (and liked)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ever tried role-play? If yes, describe your favorite scenario.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever had a make-out session in a public place?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s a secret fetish you haven’t told many people about?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you joined any ‘adult’ websites or communities online?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your favorite type of lingerie or underwear to see on someone?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ever tried an adult toy? Did you enjoy it?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever had a forbidden crush (like on a friend’s partner)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Would you ever go to a nude beach? Why or why not?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do you like being dominated or doing the dominating?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most scandalous outfit you’ve worn to go out?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever done a striptease for someone?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you could have a fling with a fictional character, who and why?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most embarrassing thing that’s happened to you in bed?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  4: [
+    {
+      "text": "What’s your biggest turn-on that surprises people?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you had a one-night stand? Spill a juicy detail.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s a fantasy you’re afraid to admit you want to try?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever tried something in bed that scared you at first?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Share a time you were unexpectedly turned on.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you could watch any two people hook up, who would it be?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the wildest place you’ve had a passionate moment?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever given a lap dance or private dance? Spill the story.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest turn-on physically in a partner?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you could explore a threesome scenario, what would it look like?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever taken nude photos or let someone take them of you?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest secret fantasy location for intimate fun?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever accidentally or intentionally recorded yourself doing it?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most risqué thing on your phone right now?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ever tested your own boundaries and ended up loving it?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever been in an open relationship or considered it?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do you prefer slow, sensual sessions or quick, intense ones?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s a fetish or kink you don’t understand (but maybe you’re curious)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the craziest thing you’ve done to set the mood?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever crossed paths with a swingers or lifestyle club?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  5: [
+    {
+      "text": "Share your most explicit fantasy... or skip!",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Who here would you most like to have a secret fling with?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your favorite erotic memory you revisit often?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you tried bondage or BDSM? How was it?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Would you ever swap partners or do a group scenario if everyone consented?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your biggest taboo fantasy that you’ve never acted on?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever used food in your bedroom activities? How did it go?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the most you’ve done in a public place without getting caught?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do you have a ‘safe word’? If so, what is it (or describe it)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you could only do one position forever, which would it be?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever given or received a ‘hall pass’ in a relationship?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever had a purely physical arrangement with someone?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s your ultimate fantasy outfit or costume on a partner?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the naughtiest thing you’d do right now if no one would judge?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever tried a same-sex experience (or wanted to)?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Would you appear in an adult film if guaranteed anonymity?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ever fantasized about multiple partners at once? Explain.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "What’s the raciest thing you’ve done at a party or hotel?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Have you ever hooked up with someone whose name you never knew?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you had the chance to fulfill one wild dream tonight, what would it be?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// DARE PROMPTS
+// 20 each level, mild→very spicy
+// --------------------------------------------------------------------------
+Map<int, List<Map<String, dynamic>>> dares = {
+  1: [
+    {
+      "text": "Do a silly dance for 10 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Let someone tickle you for 15 seconds.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Eat a spoonful of a condiment chosen by the group.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Sing the chorus of a cheesy pop song.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Swap seats with the person next to you, crawling under the table.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Give a 10-second shoulder massage to {partner}.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Pretend you’re a chicken for 15 seconds, sounds included.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Let another player restyle your hair (or fix your clothes).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Balance a book on your head and walk across the room.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do 5 push-ups or squats, your choice.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Create a funny handshake with {partner}.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Imitate a famous cartoon character’s voice for 10 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Let the group rename you for the rest of the round.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let someone draw a silly mustache on you with washable marker.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Mimic the dance moves of the last TikTok you watched.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Smell {partner}’s neck and describe the scent in detail.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Attempt a handstand for at least 3 seconds (or skip).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Drink a glass of water with your hands behind your back.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Recite the alphabet backward (fail or skip means -1).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Compliment every player in one sentence each.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  2: [
+    {
+      "text": "Send a flirty emoji to {partner}’s phone right now.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Impersonate another player’s laugh for 20 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Exchange shirts with {partner} for the next 10 minutes (if consenting).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Let {partner} style your hair in a silly way for the next round.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Demonstrate your sexiest walk across the room.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Attempt to do the splits (or get as low as you can).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Perform a dramatic reading of a romance novel excerpt (choose any text).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let {partner} give you a temporary tattoo with a pen (PG-13 only!).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Use pick-up lines on everyone in the circle until one reacts.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Give a playful spank to {partner} if they consent.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Lick a small dab of whipped cream or chocolate syrup off {partner}’s finger.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Wear your socks on your hands for the next 3 turns.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Share a 20-second slow dance with {partner}.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Let the group come up with a new catchphrase you must say all night.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Act out the last romantic movie scene you watched.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Give {partner} a 30-second foot massage.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Admit something embarrassing about your last intimate experience.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Put on a blindfold and guess which player just whispered your name.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Switch seats with the person you find most attractive here.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Play ‘air guitar’ like a rock star for 15 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+  ],
+  3: [
+    {
+      "text": "Act out a fake orgasm in front of everyone for 10 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Give {partner} a lap dance (45s) with music.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 45,
+    },
+    {
+      "text": "Show the group how you’d seductively eat a banana or popsicle.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Whisper something absolutely dirty to {partner} (no one else hears).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Kiss or nibble {partner}’s ear for 5 seconds if they consent.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Let someone rummage through your phone’s photos for 30 seconds (with supervision).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Speak in your sexiest voice for the next 3 turns.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let {partner} draw a heart on your chest (above shirt is okay).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Swap one clothing item with {partner} (shirt, hat, etc.).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Do a body shot off {partner} or vice versa (if you’re drinking).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Perform a 15-second strip tease (keep underwear on).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Let the group decide a new nickname you must respond to all night.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Give a slow, sensual lick to your beverage bottle/can.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Remove 2 pieces of jewelry or accessories (or 1 piece of clothing).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Twerk for 10 seconds while making eye contact with {partner}.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Switch your top with the same size person for 2 rounds if consenting.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let {partner} gently bite your lip or neck for 3 seconds.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 3,
+    },
+    {
+      "text": "Have a 30-second ‘blow a kiss’ duel with {partner}.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Pretend you are a sexy flight attendant giving safety instructions.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let any player check your browsing history for 15 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+  ],
+  4: [
+    {
+      "text": "Switch an item of clothing with {partner}.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Blindfold yourself and guess who’s touching you.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let {partner} spank you 3 times with an object of their choice (consensual).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Perform a 30-second ‘pole dance’ using a nearby chair or wall.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Kiss {partner} on the neck or collarbone for 5 seconds.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Let someone write a playful word on your bare skin (waist-up).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Trade underwear with {partner} (if size allows and consenting).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Pretend to make out with your reflection in a mirror (10s).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Let {partner} gently feed you something sweet or fruity.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Act like a cat in heat for 15 seconds, meow and all.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Show your most seductive dance move without music.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let any player rummage through your phone for 1 minute (supervised).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 60,
+    },
+    {
+      "text": "Draw an arrow pointing down your belly (above clothes) and show it.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Simulate a passionate make-out with your hand for 10 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Let the group pick a sexy nickname you must use next round.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Tickle {partner}’s thigh for 10 seconds (if consenting).",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Do your best fake ‘porn star’ moan for 5 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Switch pants/skirts with someone of a different gender for 2 rounds.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Show the group how you seduce someone with just your eyes for 10s.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Have {partner} trace their finger along your body slowly (above clothes).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+  ],
+  5: [
+    {
+      "text": "Kiss {partner} anywhere they choose.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Do a full striptease down to underwear, if comfortable.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Demonstrate your favorite sexual position with a pillow for 15 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Let someone apply body oil or lotion to your arms or legs seductively.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Give a 30-second erotic massage to {partner} if they consent.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Simulate your best ‘dirty talk’ for 10 seconds with an imaginary partner.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Show the group your O-face for 5 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Invite {partner} into a closet or hidden corner for 30 seconds alone.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Remove one player’s clothing item with your teeth (both consenting).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Do a body shot off the player you find sexiest here.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Perform a 1-minute ‘seduction show’ for everyone, music optional.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 60,
+    },
+    {
+      "text": "Let {partner} spank you or vice versa for 5 seconds with their hand.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Wet your lips and kiss someone’s neck (both consenting).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pretend to climax in slow motion for 10 seconds, while locking eyes with {partner}.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Try to take off {partner}’s socks using only your teeth.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Flash a body part you’re comfortable showing for 3 seconds. (Use your discretion!)",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 3,
+    },
+    {
+      "text": "Let {partner} bite or nibble your ear, neck, or lip for 5 seconds.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Do a slow, sensual dance with {partner}, no space between you for 30 seconds.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Let any player check your direct messages for 15 seconds (supervised).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Pass an ice cube from your mouth to {partner}’s (consent & hygiene!).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+  ],
+};
+
+// --------------------------------------------------------------------------
+// WILD PROMPTS
+// 20 each level, from mild group tasks to group illusions
+// --------------------------------------------------------------------------
+Map<int, List<Map<String, dynamic>>> wilds = {
+  1: [
+    {
+      "text": "Everyone must clap in a rhythm you create (15s).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Reveal something you find oddly attractive about yourself.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group stretch: Everyone does 3 easy yoga poses together.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Make the entire group laugh with a 15-second comedic routine.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Everyone shares one positive thing about the person to their left.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group: If you were an animal, what would you be and why?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players must hum the same tune for 10 seconds in unison.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Pick one person to do 5 jumping jacks with you.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone reveal your favorite movie guilty pleasure.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group poll: Are you a morning person or night owl?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone demonstrate their best silly face at the same time.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group a random trivia question. If they fail, they do 5 squats.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Trade seats with someone wearing the same color as you.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick someone to high-five 10 times in a row, quickly.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group challenge: Everyone holds their breath for 10s—who lasts longest?",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Pick a random object. Everyone must say a random use for it.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone stands up and spins around 3 times, then sits down.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner and do a short slow-motion handshake in front of everyone.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Compliment the group on something they collectively have in common.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask everyone to guess your favorite candy. If all fail, you gain +1 point.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  2: [
+    {
+      "text": "Swap seats with the person across from you while crawling.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "All players who have dated more than 3 people take a shot!",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick two people and make them stare at each other for 20s. First to laugh loses.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Choose someone to dance with for 30s to the silliest song on your phone.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 30,
+    },
+    {
+      "text": "Everyone reveal a random 'weird' turn-on (PG-13).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group: Which celebrity would they share a night with if given the chance?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Form a conga line with everyone for at least 20 seconds of music.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Group poll: Who’s the most adventurous here? They get +1 point.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick 3 people to do a 10-second awkward group hug with you.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Everyone must share their current relationship status or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group: 'What’s my best feature?' Everyone answers one positive trait.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who have tried online dating do a quick silly wave.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner and do a 15s tango in slow motion.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Make up a silly short poem about the group and recite it.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone who’s wearing jeans must roll them up to their knees for 2 turns.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group challenge: Everyone meows instead of speaks for the next turn.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Tell each person in the circle one thing you admire about them.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick someone to trade shoes with for the next 2 rounds (if size fits!).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players vote on the best dancer in the group; that person gets +1 point.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group question: Who’s the funniest here? Winner does a victory dance for 10s.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+  ],
+  3: [
+    {
+      "text": "Group Challenge: Everyone who’s comfortable tries a 10s twerk.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Play ‘spin the bottle’ with {partner}: 1 quick kiss if it lands on them.",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Everyone shares the sexiest place they’ve done something intimate.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who have had a one-night stand must take a sip of their drink.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick 2 people to have a ‘sexy pose-off’ for 15 seconds.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Group poll: Who’s the biggest flirt here? They get +2 points.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone who’s wearing red can ask another player a spicy question.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner and act out a scene from a soap opera for 20s.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Group confessional: Everyone shares a mild fantasy or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone trades seats with someone of the same gender.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group: 'What’s my sexiest feature?' Everyone must answer honestly.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who have ever gone commando must raise their hand.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pretend you are a celebrity meeting fans (the group) for 15s.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Challenge: Everyone tries to whistle a random tune together. Most out-of-tune loses a point.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players must wink at another player for 10 seconds straight. Awkwardness ensues!",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Ask the group: If you had to set me up on a blind date, who would it be with?",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick someone to reenact a moment when you were super embarrassed.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you’ve ever danced provocatively in a club, show us a 5-second snippet.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+    {
+      "text": "Everyone who’s single must describe their dream partner in one sentence.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group chooses one taboo topic. Everyone must say one line about it or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+  ],
+  4: [
+    {
+      "text": "All players remove one item of clothing (not underwear) if comfortable.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Trade phones with {partner} and let them post one silly status (both approve!).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner: both you and they reveal your favorite bedroom position (words only).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Everyone who’s had a raunchy dream about someone here must drink or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group Poll: Who’s the kinkiest? That person must do a 10s ‘catwalk.’",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "Pick 2 players to stand up and share their hottest turn-on in 10 words or less.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you’ve ever sent a nude, take a sip or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group challenge: Everyone moans the word ‘yes’ simultaneously once.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick someone to role-play a quick 15s wedding vow with you, comedic or steamy.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "All players who have tried a toy must share if it’s a yay or nay.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let the group decide your next dare if you skip this one.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone who has had public intimacy shares a one-liner about it.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner and do a 10s slow, intimate hug in the center.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "All single players choose one person they’d consider hooking up with, hypothetically.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group question: ‘Have you ever been caught in the act?’ Everyone answer or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick 2 players to share the most risqué photo they’d be comfortable showing.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you’ve ever fantasized about group sex, raise your hand or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Let the group rename your hypothetical porn star name in 5 words or less.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who’d try a threesome must clap 3 times now or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner to do a 10s role-play as strangers hooking up.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+  ],
+  5: [
+    {
+      "text": "Group moan: everyone moans once in unison. Loud or soft, your call!",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Partner Show: {partner} lightly spanks you 3 times (if both consent).",
+      "requiresPartner": true,
+      "timed": false,
+    },
+    {
+      "text": "Everyone with a secret crush here must take a shot or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players share their top 2 fetishes or skip if uncomfortable.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick one person you’d want a midnight rendezvous with and say why.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group poll: Who’s most likely to have a sex tape? Winner does a 10s celebratory dance.",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 10,
+    },
+    {
+      "text": "If you’ve done role-play in bed, briefly describe your favorite scenario.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone wearing black must share a naughty secret or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick 2 people to do a 15s demonstration of ‘orgasm faces’ (consent!).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 15,
+    },
+    {
+      "text": "Group question: Who’s most likely to hook up in a public place? They get +1 point.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone who’s tried a same-sex fling must raise a hand or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Ask the group: ‘Would you watch me strip for \$100?’ Tally answers, get +1 if majority say yes.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who have joined an adult dating site must do a quick pose.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick a partner and do a 20s ‘sensual dance’ while everyone watches.",
+      "requiresPartner": true,
+      "timed": true,
+      "timerSeconds": 20,
+    },
+    {
+      "text": "Group shares a memory of their hottest hookup (1-liner each).",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Everyone confesses one place they’d love to have sex but haven’t yet.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "If you’re in a relationship, reveal if you’d ever consider an open scenario.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Pick 3 people to do a quick ‘body roll’ demonstration together.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "All players who have a secret kink they haven’t shared must take a sip or skip.",
+      "requiresPartner": false,
+      "timed": false,
+    },
+    {
+      "text": "Group challenge: Everyone do a 5s orgasm moan together (prepare for chaos!).",
+      "requiresPartner": false,
+      "timed": true,
+      "timerSeconds": 5,
+    },
+  ],
+};
+
+/// If you keep the checks below, ensure `levelIsActive` is defined or remove them.
+List<Map<String, dynamic>> getActiveTruths(int level) {
+  // If levelIsActive is global, ensure it's imported or declared
+  // Otherwise, remove this check or handle it differently
+  // For example:
+  // if (levelIsActive[level] == false) return [];
+  return truths[level] ?? [];
+}
+
+List<Map<String, dynamic>> getActiveDares(int level) {
+  return dares[level] ?? [];
+}
+
+List<Map<String, dynamic>> getActiveWilds(int level) {
+  return wilds[level] ?? [];
+}
