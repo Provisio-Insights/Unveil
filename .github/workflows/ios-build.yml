@@ -18,20 +18,11 @@ jobs:
       with:
         flutter-version: 'stable'
 
+    - name: Debug Flutter Setup
+      run: flutter doctor
+
     - name: Install dependencies
       run: flutter pub get
 
-    - name: Set up Xcode environment
-      run: |
-        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-        flutter doctor
-
     - name: Build iOS app
       run: flutter build ios --release --no-codesign
-
-    - name: Archive IPA
-      run: |
-        cd build/ios/iphoneos
-        zip -r app.ipa Runner.app
-      env:
-        FLUTTER_ROOT: ${{ env.HOME }}/flutter

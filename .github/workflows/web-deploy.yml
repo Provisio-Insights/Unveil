@@ -18,6 +18,9 @@ jobs:
       with:
         flutter-version: 'stable'
 
+    - name: Debug Flutter Setup
+      run: flutter doctor
+
     - name: Install dependencies
       run: flutter pub get
 
